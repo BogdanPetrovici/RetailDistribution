@@ -16,6 +16,12 @@ namespace HelloWebAPI.Configuration
 				defaults: new { id = RouteParameter.Optional }
 			);
 
+			config.Routes.MapHttpRoute(
+				name: "DistrictApi",
+				routeTemplate: "api/district/{district}",
+				defaults: new { id = RouteParameter.Optional }
+			);
+
 			// configure json formatter
 			//JsonMediaTypeFormatter jsonFormatter = config.Formatters.JsonFormatter;
 			//jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

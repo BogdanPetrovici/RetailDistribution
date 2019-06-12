@@ -14,6 +14,11 @@ namespace RetailDistribution.Data.Repositories
 			this.context = context;
 		}
 
+		public District GetDistrict(int id)
+		{
+			return context.Districts.FirstOrDefault(d => d.DistrictId == id);
+		}
+
 		/// <summary>
 		/// Gets a list of all tracked districts
 		/// </summary>

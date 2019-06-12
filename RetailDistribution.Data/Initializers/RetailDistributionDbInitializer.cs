@@ -25,6 +25,9 @@ namespace RetailDistribution.Data.Initializers
 			context.Shops.Add(new Model.Shop { ShopName = "Shop3", District = district1 });
 
 			context.DistrictVendors.Add(new Model.DistrictVendor { Vendor = vendor3, District = district3 });
+			context.DistrictVendors.Add(new Model.DistrictVendor { Vendor = vendor2, District = district1 });
+			context.DistrictVendors.Add(new Model.DistrictVendor { Vendor = vendor2, District = district2 });
+			context.DistrictVendors.Add(new Model.DistrictVendor { Vendor = vendor1, District = district3 });
 		}
 	}
 }
