@@ -1,9 +1,9 @@
-﻿namespace RetailDistributionClient.UI.Model
+﻿namespace RetailDistribution.Client.UI.Model
 {
-	public class District
-	{
-		public int DistrictId { get; set; }
-		public string DistrictName { get; set; }
-		public virtual Vendor PrimaryVendor { get; set; }
-	}
+    public class District
+    {
+        public int DistrictId { get; set; }
+        public string DistrictName { get; set; }
+        public Vendor PrimaryVendor { get; set; }
+    }
 }

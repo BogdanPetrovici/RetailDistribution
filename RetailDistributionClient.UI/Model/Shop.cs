@@ -1,4 +1,4 @@
-﻿namespace RetailDistributionClient.UI.Model
+﻿namespace RetailDistribution.Client.UI.Model
 {
 	public class Shop
 	{

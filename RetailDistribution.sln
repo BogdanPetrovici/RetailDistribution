@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailDistribution.Data", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailDistribution.Console", "RetailDistribution.Console\RetailDistribution.Console.csproj", "{A8190772-81CF-4238-8110-87F0C6F5D019}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailDistributionClient.UI", "RetailDistributionClient.UI\RetailDistributionClient.UI.csproj", "{889C17E4-79EB-4510-BCBF-9D5E010C1444}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailDistribution.Client.UI", "RetailDistributionClient.UI\RetailDistribution.Client.UI.csproj", "{889C17E4-79EB-4510-BCBF-9D5E010C1444}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
