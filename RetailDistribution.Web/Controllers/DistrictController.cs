@@ -10,6 +10,8 @@ namespace RetailDistribution.Web.Controllers
 {
     public class DistrictController : ApiController
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private RetailDistributionUnitOfWork unitOfWork = new RetailDistributionUnitOfWork();
 
         public IEnumerable<District> Get()
@@ -82,11 +84,12 @@ namespace RetailDistribution.Web.Controllers
             }
             catch (InvalidOperationException exCannotRemove)
             {
+                log.Error(exCannotRemove.ToString());
                 return Request.CreateResponse(HttpStatusCode.BadRequest, exCannotRemove.Message);
             }
             catch (Exception ex)
             {
-                //log exception
+                log.Error(ex.ToString());
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
