@@ -1,4 +1,5 @@
 ﻿using RetailDistribution.Data.Model;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -12,6 +13,49 @@ namespace RetailDistribution.Data.Repositories
 		public VendorRepository(RetailDistributionContext context)
 		{
 			this.context = context;
+		}
+
+		/// <summary>
+		/// Adds a vendor to an existing district
+		/// </summary>
+		/// <param name="districtId">The district id to which the vendor will be associated</param>
+		/// <param name="vendor">Transfer object sent from the client (in this case, the client's model becomes an unlinked EF model)</param>
+		/// <returns>true if everything ok, false otherwise</returns>
+		public bool AddVendor(int districtId, Vendor vendor)
+		{
+			try
+			{
+				if (vendor != null)
+				{
+					var vendorEntity = context.Vendors.FirstOrDefault(v => v.VendorId == vendor.VendorId);
+					// If a district was selected when adding the vendor, create the link between the two
+					if (vendorEntity != null)
+					{
+						var districtEntity = context.Districts.FirstOrDefault(d => d.DistrictId == districtId);
+						if (districtEntity != null)
+						{
+							context.DistrictVendors.Add(new DistrictVendor
+							{
+								District = districtEntity,
+								Vendor = vendorEntity
+							});
+
+							// If the vendor was marked as primary, mark this in the corresponding district
+							if (vendor.IsPrimary)
+							{
+								districtEntity.PrimaryVendor = vendorEntity;
+							}
+						}
+					}
+				}
+
+				return true;
+			}
+			catch (Exception ex)
+			{
+				//Log it
+				return false;
+			}
 		}
 
 		/// <summary>
@@ -48,6 +92,21 @@ namespace RetailDistribution.Data.Repositories
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Gets a list of vendors not related to the specified district id
+		/// </summary>
+		/// <param name="districtId">The district's id</param>
+		/// <returns>A list of <see cref="Vendor"/> entities</returns>
+		public IEnumerable<Vendor> GetRemainingVendors(int districtId)
+		{
+			// first we select all vendors related to this districtId
+			var relatedVendorIds = context.DistrictVendors.Where(dv => dv.DistrictId == districtId)
+																			.Select(dv => dv.VendorId).ToList();
+			// then we select only the vendors not present in the list
+			var vendors = context.Vendors.Where(v => !relatedVendorIds.Contains(v.VendorId)).ToList();
+			return vendors;
 		}
 	}
 }

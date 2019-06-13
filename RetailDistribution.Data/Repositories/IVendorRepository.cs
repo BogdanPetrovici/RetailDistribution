@@ -7,5 +7,7 @@ namespace RetailDistribution.Data.Repositories
 	{
 		IEnumerable<Vendor> GetVendors(int districtId);
 		Vendor GetVendor(int vendorId);
+		bool AddVendor(int districtId, Vendor vendor);
+		IEnumerable<Vendor> GetRemainingVendors(int districtId);
 	}
 }

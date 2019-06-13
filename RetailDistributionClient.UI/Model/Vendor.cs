@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace RetailDistribution.Client.UI.Model
@@ -22,6 +23,8 @@ namespace RetailDistribution.Client.UI.Model
 				OnPropertyChanged("IsPrimary");
 			}
 		}
+
+		public IEnumerable<District> Districts { get; set; }
 
 		#region INotifyPropertyChanged members
 
