@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Routing;
 
 namespace HelloWebAPI.Configuration
 {
@@ -13,13 +15,14 @@ namespace HelloWebAPI.Configuration
 			config.Routes.MapHttpRoute(
 				name: "RetailDistributionApi",
 				routeTemplate: "api/{controller}/{id}",
-				defaults: new { id = RouteParameter.Optional }
+				defaults: new { id = RouteParameter.Optional },
+				constraints: new { id = @"\d*" }
 			);
 
 			config.Routes.MapHttpRoute(
-				name: "DistrictApi",
-				routeTemplate: "api/district/{district}",
-				defaults: new { id = RouteParameter.Optional }
+				name: "VendorApiRemainingVendors",
+				routeTemplate: "api/{controller}/{action}/{id}",
+				defaults: new { id = RouteParameter.Optional, httpMethod = new HttpMethodConstraint(HttpMethod.Get) }
 			);
 
 			// configure json formatter

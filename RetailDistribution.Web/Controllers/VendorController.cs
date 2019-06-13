@@ -1,6 +1,5 @@
 ﻿using RetailDistribution.Data.Model;
 using RetailDistribution.Data.Repositories;
-using System.Collections.Generic;
 using System.Web.Http;
 
 namespace RetailDistribution.Web.Controllers
@@ -10,14 +9,20 @@ namespace RetailDistribution.Web.Controllers
 		private RetailDistributionUnitOfWork unitOfWork = new RetailDistributionUnitOfWork();
 
 		/// <summary>
-		/// Gets the vendors associated with a specified district id
+		/// Adds a new vendor to the database
 		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		public IEnumerable<Vendor> Get(int id)
+		/// <param name="id">The district id to which the vendor will be associated</param>
+		/// <param name="vendor">The deserialization of the transfer object sent by the client. Should contain the district id and vendor name</param>
+		/// <returns>True, if successful, false otherwise</returns>
+		public bool Post(int id, [FromBody]Vendor vendor)
 		{
-			var vendors = unitOfWork.VendorRepository.GetVendors(id);
-			return vendors;
+			if (unitOfWork.VendorRepository.AddVendor(id, vendor))
+			{
+				unitOfWork.Save();
+				return true;
+			}
+
+			return false;
 		}
 
 		protected override void Dispose(bool disposing)

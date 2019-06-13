@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -12,16 +11,11 @@ namespace RetailDistribution.Client.UI.ViewModels
 {
 	public class MainViewModel : INotifyPropertyChanged
 	{
-		private static HttpClient client;
+		public static HttpClient Client { get; set; }
 
 		public MainViewModel()
 		{
-			client = new HttpClient();
-			// Update port # in the following line.
-			client.BaseAddress = new Uri(System.Configuration.ConfigurationManager.AppSettings["localServerAddress"]);
-			client.DefaultRequestHeaders.Accept.Clear();
-			client.DefaultRequestHeaders.Accept.Add(
-				new MediaTypeWithQualityHeaderValue("application/json"));
+
 		}
 
 		/// <summary>
@@ -34,11 +28,11 @@ namespace RetailDistribution.Client.UI.ViewModels
 			try
 			{
 				var districtId = SelectedDistrict?.DistrictId;
-				var parametrizedPath = $"{path}/{districtId}";
-				HttpResponseMessage response = await client.GetAsync(parametrizedPath).ConfigureAwait(false);
+				var parametrizedPath = $"{path}/getvendors/{districtId}";
+				HttpResponseMessage response = await Client.GetAsync(parametrizedPath).ConfigureAwait(false);
 				if (response.IsSuccessStatusCode)
 				{
-					Vendors = await response.Content.ReadAsAsync<IEnumerable<Vendor>>();
+					Vendors = await response.Content.ReadAsAsync<IList<Vendor>>();
 				}
 
 				return Vendors;
@@ -59,7 +53,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 		{
 			try
 			{
-				HttpResponseMessage response = await client.GetAsync(path).ConfigureAwait(false);
+				HttpResponseMessage response = await Client.GetAsync(path).ConfigureAwait(false);
 				if (response.IsSuccessStatusCode)
 				{
 					Districts = await response.Content.ReadAsAsync<IList<District>>();
@@ -72,6 +66,18 @@ namespace RetailDistribution.Client.UI.ViewModels
 				Console.WriteLine(e.Message);
 				return null;
 			}
+		}
+
+		/// <summary>
+		/// Refreshes the list of districts and resets the dependent control (vendors, shops)
+		/// </summary>
+		public async Task RefreshDistricts()
+		{
+			await GetDistrictsAsync(ServicePaths.DistrictsEndpoint);
+			SelectedVendor = null;
+			SelectedDistrict = null;
+			Vendors = null;
+			Shops = null;
 		}
 
 		/// <summary>
@@ -88,8 +94,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 					// Get the right object reference (the one bound to the Vendor listbox)
 					var originalVendor = Vendors.FirstOrDefault(v => v.VendorId == SelectedDistrict.PrimaryVendor.VendorId);
 					SelectedDistrict.PrimaryVendor = SelectedVendor;
-					var parametrizedPath = $"{path}";
-					HttpResponseMessage response = await client.PutAsJsonAsync(parametrizedPath, SelectedDistrict).ConfigureAwait(false);
+					HttpResponseMessage response = await Client.PutAsJsonAsync(path, SelectedDistrict).ConfigureAwait(false);
 					if (response.IsSuccessStatusCode)
 					{
 						originalVendor.IsPrimary = false;
@@ -113,6 +118,32 @@ namespace RetailDistribution.Client.UI.ViewModels
 			}
 		}
 
+		public async Task<bool> AddVendor(string path, Vendor vendorTransferObject)
+		{
+			try
+			{
+				if (SelectedDistrict != null)
+				{
+					var parametrizedPath = $"{path}";
+					vendorTransferObject.Districts = new List<District> { SelectedDistrict };
+					HttpResponseMessage response = await Client.PostAsJsonAsync(path, vendorTransferObject).ConfigureAwait(false);
+					if (response.IsSuccessStatusCode)
+					{
+						var success = await response.Content.ReadAsAsync<bool>();
+						Vendors.Add(vendorTransferObject);
+						return true;
+					}
+				}
+
+				return false;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				return false;
+			}
+		}
+
 		/// <summary>
 		/// Calls the service endpoint and gets all the available shops for a particular district
 		/// </summary>
@@ -124,7 +155,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 			{
 				var districtId = SelectedDistrict?.DistrictId;
 				var parametrizedPath = $"{path}/{districtId}";
-				HttpResponseMessage response = await client.GetAsync(parametrizedPath).ConfigureAwait(false);
+				HttpResponseMessage response = await Client.GetAsync(parametrizedPath).ConfigureAwait(false);
 				if (response.IsSuccessStatusCode)
 				{
 					Shops = await response.Content.ReadAsAsync<IEnumerable<Shop>>();
@@ -146,11 +177,33 @@ namespace RetailDistribution.Client.UI.ViewModels
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		public District SelectedDistrict { get; set; }
-		public Vendor SelectedVendor { get; set; }
+		public District selectedDistrict;
+		public District SelectedDistrict
+		{
+			get { return selectedDistrict; }
+			set
+			{
+				selectedDistrict = value;
+				OnPropertyChanged("IsAddVendorEnabled");
+				OnPropertyChanged("IsSetPrimaryVendorEnabled");
+			}
+		}
+
+		public Vendor selectedVendor;
+		public Vendor SelectedVendor
+		{
+			get
+			{
+				return selectedVendor;
+			}
+			set
+			{
+				selectedVendor = value;
+				OnPropertyChanged("IsRemoveVendorEnabled");
+			}
+		}
 
 		private IList<District> districts;
-
 		public IList<District> Districts
 		{
 			get
@@ -164,9 +217,8 @@ namespace RetailDistribution.Client.UI.ViewModels
 			}
 		}
 
-		private IEnumerable<Vendor> vendors;
-
-		public IEnumerable<Vendor> Vendors
+		private IList<Vendor> vendors;
+		public IList<Vendor> Vendors
 		{
 			get
 			{
@@ -180,7 +232,6 @@ namespace RetailDistribution.Client.UI.ViewModels
 		}
 
 		private IEnumerable<Shop> shops;
-
 		public IEnumerable<Shop> Shops
 		{
 			get
@@ -191,6 +242,30 @@ namespace RetailDistribution.Client.UI.ViewModels
 			{
 				shops = value;
 				OnPropertyChanged("Shops");
+			}
+		}
+
+		public bool IsAddVendorEnabled
+		{
+			get
+			{
+				return SelectedDistrict != null;
+			}
+		}
+
+		public bool IsSetPrimaryVendorEnabled
+		{
+			get
+			{
+				return SelectedDistrict != null;
+			}
+		}
+
+		public bool IsRemoveVendorEnabled
+		{
+			get
+			{
+				return SelectedVendor != null;
 			}
 		}
 	}
