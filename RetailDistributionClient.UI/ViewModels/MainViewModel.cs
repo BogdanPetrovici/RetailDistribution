@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -148,9 +149,21 @@ namespace RetailDistribution.Client.UI.ViewModels
                         await RefreshVendors();
                         return true;
                     }
+                    //Ideally, I would use a different set of error codes for passing error messages to clients
+                    // but due to lack of time, I'm piggybacking on HTTP's status codes
+                    else if (response.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        throw new InvalidOperationException("Cannot remove primary vendor. Set another vendor as primary and retry.");
+                    }
                 }
 
                 return false;
+            }
+            //This one is sent further to the UI
+            catch (InvalidOperationException)
+            {
+                //Log and throw
+                throw;
             }
             catch (Exception e)
             {

@@ -87,14 +87,19 @@ namespace RetailDistribution.Client.UI
 
         private async void RemoveVendor_Button_Click(object sender, RoutedEventArgs e)
         {
-            Button btn = (Button)sender;
-            var mainViewModel = DataContext as MainViewModel;
-            if (mainViewModel != null && btn.IsEnabled)
+            try
             {
-                await mainViewModel.RemoveVendor(ServicePaths.DistrictsEndpoint);
+                Button btn = (Button)sender;
+                var mainViewModel = DataContext as MainViewModel;
+                if (mainViewModel != null && btn.IsEnabled)
+                {
+                    await mainViewModel.RemoveVendor(ServicePaths.DistrictsEndpoint);
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, "Cannot remove vendor", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-
     }
 }

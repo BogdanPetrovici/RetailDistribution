@@ -2,6 +2,8 @@
 using RetailDistribution.Data.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 
 namespace RetailDistribution.Web.Controllers
@@ -70,23 +72,22 @@ namespace RetailDistribution.Web.Controllers
         /// <returns>True if successful, false, otherwise</returns>
         [HttpDelete]
         [Route("api/district/removeVendor/{districtId}/{vendorId}")]
-        public bool RemoveVendor(int districtId, int vendorId)
+        public HttpResponseMessage RemoveVendor(int districtId, int vendorId)
         {
             try
             {
                 unitOfWork.DistrictRepository.RemoveVendor(districtId, vendorId);
                 unitOfWork.Save();
-                return true;
+                return Request.CreateResponse(HttpStatusCode.OK, true);
             }
             catch (InvalidOperationException exCannotRemove)
             {
-                // Handle error case & log
-                return false;
+                return Request.CreateResponse(HttpStatusCode.BadRequest, exCannotRemove.Message);
             }
             catch (Exception ex)
             {
                 //log exception
-                return false;
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
