@@ -13,7 +13,9 @@ namespace RetailDistribution.Client.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private HttpClient client;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -98,6 +100,7 @@ namespace RetailDistribution.Client.UI
             }
             catch (InvalidOperationException ex)
             {
+                log.Error(ex.ToString());
                 MessageBox.Show(ex.Message, "Cannot remove vendor", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

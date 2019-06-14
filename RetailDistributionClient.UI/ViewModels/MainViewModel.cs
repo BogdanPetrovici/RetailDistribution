@@ -13,6 +13,7 @@ namespace RetailDistribution.Client.UI.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         public static HttpClient Client { get; set; }
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public MainViewModel()
         {
@@ -40,7 +41,7 @@ namespace RetailDistribution.Client.UI.ViewModels
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                log.Error(e.ToString());
                 return null;
             }
         }
@@ -64,7 +65,7 @@ namespace RetailDistribution.Client.UI.ViewModels
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                log.Error(e.ToString());
                 return null;
             }
         }
@@ -120,7 +121,7 @@ namespace RetailDistribution.Client.UI.ViewModels
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                log.Error(e.ToString());
                 return false;
             }
             finally
@@ -162,12 +163,11 @@ namespace RetailDistribution.Client.UI.ViewModels
             //This one is sent further to the UI
             catch (InvalidOperationException)
             {
-                //Log and throw
                 throw;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                log.Error(e.ToString());
                 return false;
             }
             finally
@@ -197,7 +197,7 @@ namespace RetailDistribution.Client.UI.ViewModels
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                log.Error(e.ToString());
                 return null;
             }
         }
