@@ -1,14 +1,14 @@
 ﻿using RetailDistribution.Client.UI.ViewModels;
 using System.Windows;
 
-namespace RetailDistribution.Client.UI
+namespace RetailDistribution.Client.UI.Views
 {
 	/// <summary>
 	/// Interaction logic for AddVendorDialog.xaml
 	/// </summary>
-	public partial class AddVendorDialog : Window
+	public partial class AddVendor : Window
 	{
-		public AddVendorDialog()
+		public AddVendor()
 		{
 			InitializeComponent();
 		}

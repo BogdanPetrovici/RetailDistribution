@@ -6,50 +6,34 @@ namespace RetailDistribution.Data.Repositories
 	/// Not really necessary, but for conceptual consistency there were created multiple repositories, 
 	/// therefore a unit of work for saving and disposing the unique context would be necessary
 	/// </summary>
-	public class RetailDistributionUnitOfWork : IDisposable
+	public class RetailDistributionUnitOfWork : IRetailDistributionUnitOfWork
 	{
-		private RetailDistributionContext context = new RetailDistributionContext();
 		private IDistrictRepository districtRepository;
 		private IShopRepository shopRepository;
 		private IVendorRepository vendorRepository;
+		private readonly RetailDistributionContext context;
+
+		public RetailDistributionUnitOfWork(RetailDistributionContext context, IDistrictRepository districtRepository, IVendorRepository vendorRepository, IShopRepository shopRepository)
+		{
+			this.districtRepository = districtRepository;
+			this.vendorRepository = vendorRepository;
+			this.shopRepository = shopRepository;
+			this.context = context;
+		}
 
 		public IDistrictRepository DistrictRepository
 		{
-			get
-			{
-				if (districtRepository == null)
-				{
-					districtRepository = new DistrictRepository(context);
-				}
-
-				return districtRepository;
-			}
+			get { return districtRepository; }
 		}
 
 		public IVendorRepository VendorRepository
 		{
-			get
-			{
-				if (vendorRepository == null)
-				{
-					vendorRepository = new VendorRepository(context);
-				}
-
-				return vendorRepository;
-			}
+			get { return vendorRepository; }
 		}
 
 		public IShopRepository ShopRepository
 		{
-			get
-			{
-				if (shopRepository == null)
-				{
-					shopRepository = new ShopRepository(context);
-				}
-
-				return shopRepository;
-			}
+			get { return shopRepository; }
 		}
 
 		public void Save()
