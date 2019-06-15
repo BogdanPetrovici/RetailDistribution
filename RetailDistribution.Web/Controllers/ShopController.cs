@@ -7,7 +7,12 @@ namespace RetailDistribution.Web.Controllers
 {
 	public class ShopController : ApiController
 	{
-		private RetailDistributionUnitOfWork unitOfWork = new RetailDistributionUnitOfWork();
+		private IRetailDistributionUnitOfWork unitOfWork;
+
+		public ShopController(IRetailDistributionUnitOfWork unitOfWork)
+		{
+			this.unitOfWork = unitOfWork;
+		}
 
 		public IEnumerable<Shop> Get(int id)
 		{
