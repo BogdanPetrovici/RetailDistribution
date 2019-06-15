@@ -14,13 +14,14 @@ namespace RetailDistribution.Client.UI.ViewModels
 {
 	public class MainViewModel : INotifyPropertyChanged
 	{
-		public static HttpClient Client { get; set; }
+		private readonly HttpClient client;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		private readonly IDialogService dialogService;
 
-		public MainViewModel(IDialogService dialogService)
+		public MainViewModel(IDialogService dialogService, HttpClient client)
 		{
 			this.dialogService = dialogService;
+			this.client = client;
 		}
 
 		#region proxy calls
@@ -36,7 +37,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 			{
 				var districtId = SelectedDistrict?.DistrictId;
 				var parametrizedPath = $"{path}/getvendors/{districtId}";
-				HttpResponseMessage response = await Client.GetAsync(parametrizedPath).ConfigureAwait(false);
+				HttpResponseMessage response = await client.GetAsync(parametrizedPath).ConfigureAwait(false);
 				if (response.IsSuccessStatusCode)
 				{
 					Vendors = await response.Content.ReadAsAsync<IList<Vendor>>();
@@ -60,7 +61,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 		{
 			try
 			{
-				HttpResponseMessage response = await Client.GetAsync(path).ConfigureAwait(false);
+				HttpResponseMessage response = await client.GetAsync(path).ConfigureAwait(false);
 				if (response.IsSuccessStatusCode)
 				{
 					Districts = await response.Content.ReadAsAsync<IList<District>>();
@@ -97,7 +98,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 		{
 			if (SelectedDistrict != null)
 			{
-				var addVendorViewModel = new AddVendorViewModel(Client);
+				var addVendorViewModel = new AddVendorViewModel(client);
 				addVendorViewModel.DistrictId = SelectedDistrict.DistrictId;
 				dialogService.ShowDialog<AddVendor>(this, addVendorViewModel);
 
@@ -120,7 +121,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 					// Get the right object reference (the one bound to the Vendor listbox)
 					var originalVendor = Vendors.FirstOrDefault(v => v.VendorId == SelectedDistrict.PrimaryVendor.VendorId);
 					SelectedDistrict.PrimaryVendor = SelectedVendor;
-					HttpResponseMessage response = await Client.PutAsJsonAsync(path, SelectedDistrict).ConfigureAwait(false);
+					HttpResponseMessage response = await client.PutAsJsonAsync(path, SelectedDistrict).ConfigureAwait(false);
 					if (response.IsSuccessStatusCode)
 					{
 						await RefreshVendors();
@@ -160,7 +161,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 				if (SelectedDistrict != null && SelectedVendor != null)
 				{
 					var parametrizedPath = $"{path}/removeVendor/{SelectedDistrict.DistrictId}/{SelectedVendor.VendorId}";
-					HttpResponseMessage response = await Client.DeleteAsync(parametrizedPath).ConfigureAwait(false);
+					HttpResponseMessage response = await client.DeleteAsync(parametrizedPath).ConfigureAwait(false);
 					if (response.IsSuccessStatusCode)
 					{
 						var success = await response.Content.ReadAsAsync<bool>();
@@ -204,7 +205,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 			{
 				var districtId = SelectedDistrict?.DistrictId;
 				var parametrizedPath = $"{path}/{districtId}";
-				HttpResponseMessage response = await Client.GetAsync(parametrizedPath).ConfigureAwait(false);
+				HttpResponseMessage response = await client.GetAsync(parametrizedPath).ConfigureAwait(false);
 				if (response.IsSuccessStatusCode)
 				{
 					Shops = await response.Content.ReadAsAsync<IEnumerable<Shop>>();

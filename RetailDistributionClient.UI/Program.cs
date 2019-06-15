@@ -3,6 +3,8 @@ using RetailDistribution.Client.UI.ViewModels;
 using RetailDistribution.Client.UI.Views;
 using SimpleInjector;
 using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace RetailDistribution.Client.UI
 {
@@ -23,11 +25,21 @@ namespace RetailDistribution.Client.UI
 			// Create the container as usual.
 			var container = new Container();
 
-			// Register your types, for instance:
-			//container.Register<IQueryProcessor, QueryProcessor>(Lifestyle.Singleton);
-			//container.Register<IUserContext, WpfUserContext>();
-
+			//Initialize service for opening dialog boxes
 			container.Register<IDialogService>(() => { return new DialogService(); }, Lifestyle.Singleton);
+
+			//Initialize HttpClient for calls to webapi
+			container.Register<HttpClient>(() =>
+			{
+				var client = new HttpClient();
+				// Update port # in the following line.
+				client.BaseAddress = new Uri(System.Configuration.ConfigurationManager.AppSettings["localServerAddress"]);
+				client.DefaultRequestHeaders.Accept.Clear();
+				client.DefaultRequestHeaders.Accept.Add(
+					new MediaTypeWithQualityHeaderValue("application/json"));
+				return client;
+			}, Lifestyle.Singleton);
+
 
 			container.Register<MainViewModel>();
 			container.Register<Main>();

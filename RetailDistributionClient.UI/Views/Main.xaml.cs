@@ -1,7 +1,5 @@
 ﻿using RetailDistribution.Client.UI.ViewModels;
 using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,19 +12,11 @@ namespace RetailDistribution.Client.UI.Views
 	public partial class Main : Window
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		private HttpClient client;
 
 		public Main(MainViewModel viewModel)
 		{
 			InitializeComponent();
 			DataContext = viewModel;
-
-			client = new HttpClient();
-			// Update port # in the following line.
-			client.BaseAddress = new Uri(System.Configuration.ConfigurationManager.AppSettings["localServerAddress"]);
-			client.DefaultRequestHeaders.Accept.Clear();
-			client.DefaultRequestHeaders.Accept.Add(
-				new MediaTypeWithQualityHeaderValue("application/json"));
 		}
 
 		private async Task RefreshDistricts(Button btn)
@@ -42,7 +32,6 @@ namespace RetailDistribution.Client.UI.Views
 
 		private async void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			MainViewModel.Client = client;
 			await RefreshDistricts(RefreshDistrictsButton);
 		}
 

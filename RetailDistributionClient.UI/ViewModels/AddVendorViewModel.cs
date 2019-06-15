@@ -11,7 +11,7 @@ namespace RetailDistribution.Client.UI.ViewModels
 {
 	public class AddVendorViewModel : INotifyPropertyChanged, IModalDialogViewModel
 	{
-		private HttpClient client;
+		private readonly HttpClient client;
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public AddVendorViewModel(HttpClient client)
