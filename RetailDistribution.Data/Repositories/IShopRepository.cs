@@ -1,5 +1,5 @@
 ﻿using RetailDistribution.Data.Model;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace RetailDistribution.Data.Repositories
 {
@@ -10,6 +10,6 @@ namespace RetailDistribution.Data.Repositories
 		/// </summary>
 		/// <param name="districtId">The district's id</param>
 		/// <returns></returns>
-		IEnumerable<Shop> GetShops(int districtId);
+		IQueryable<Shop> GetShops(int districtId);
 	}
 }

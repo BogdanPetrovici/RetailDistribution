@@ -1,5 +1,4 @@
 ﻿using RetailDistribution.Data.Model;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace RetailDistribution.Data.Repositories
@@ -18,9 +17,9 @@ namespace RetailDistribution.Data.Repositories
 		/// </summary>
 		/// <param name="districtId">The district's id</param>
 		/// <returns></returns>
-		public IEnumerable<Shop> GetShops(int districtId)
+		public IQueryable<Shop> GetShops(int districtId)
 		{
-			return context.Shops.Where(s => s.District.DistrictId == districtId).ToList();
+			return context.Shops.Where(s => s.District.DistrictId == districtId);
 		}
 	}
 }

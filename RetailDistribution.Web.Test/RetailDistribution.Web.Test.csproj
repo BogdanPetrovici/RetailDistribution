@@ -72,8 +72,11 @@
     <Compile Include="Mocks\TestRetailDistributionContext.cs" />
     <Compile Include="Mocks\TestShopDbSet.cs" />
     <Compile Include="Mocks\TestVendorDbSet.cs" />
+    <Compile Include="TestBase.cs" />
     <Compile Include="TestDistrictController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestShopController.cs" />
+    <Compile Include="TestVendorController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

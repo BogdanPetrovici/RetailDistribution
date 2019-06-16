@@ -1,6 +1,7 @@
 ﻿using RetailDistribution.Data.Model;
 using RetailDistribution.Data.Repositories;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace RetailDistribution.Web.Controllers
 {
@@ -19,15 +20,16 @@ namespace RetailDistribution.Web.Controllers
 		/// <param name="id">The district id to which the vendor will be associated</param>
 		/// <param name="vendor">The deserialization of the transfer object sent by the client. Should contain the district id and vendor name</param>
 		/// <returns>True, if successful, false otherwise</returns>
-		public bool Post(int id, [FromBody]Vendor vendor)
+		[ResponseType(typeof(bool))]
+		public IHttpActionResult Post(int id, [FromBody]Vendor vendor)
 		{
 			if (unitOfWork.VendorRepository.AddVendor(id, vendor))
 			{
 				unitOfWork.Save();
-				return true;
+				return Ok(true);
 			}
 
-			return false;
+			return BadRequest();
 		}
 
 		protected override void Dispose(bool disposing)

@@ -48,7 +48,9 @@ namespace RetailDistribution.Data.Repositories
 								districtEntity.PrimaryVendor = vendorEntity;
 							}
 						}
+						else { return false; }
 					}
+					else { return false; }
 				}
 
 				return true;
@@ -75,17 +77,18 @@ namespace RetailDistribution.Data.Repositories
 		/// </summary>
 		/// <param name="districtId">The district's id</param>
 		/// <returns>The list of <see cref="Vendor"/> entities associated to the given district id</returns>
-		public IEnumerable<Vendor> GetVendors(int districtId)
+		public IQueryable<Vendor> GetVendors(int districtId)
 		{
 			var district = context.Districts.Where(d => d.DistrictId == districtId)
 											.Include(d => d.PrimaryVendor)
 											.SingleOrDefault();
 			if (district != null)
 			{
-				var vendors = context.DistrictVendors.Where(dv => dv.DistrictId == districtId)
+				var vendors = context.DistrictVendors
+										.Include(dv => dv.District)
+										.Where(dv => dv.District.DistrictId == districtId)
 										.Include(dv => dv.Vendor)
-										.Select(dv => dv.Vendor)
-										.ToList();
+										.Select(dv => dv.Vendor);
 				// Assuming that the object reference in PrimaryVendor 
 				// is the same as the corresponding vendor's object 
 				// reference in the vendors list (because of EF magic)

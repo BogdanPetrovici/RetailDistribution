@@ -1,13 +1,14 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RetailDistribution.Data.Model;
-using RetailDistribution.Data.Repositories;
 using RetailDistribution.Web.Controllers;
 using RetailDistribution.Web.Test.Mocks;
+using System.Linq;
+using System.Web.Http.Results;
 
 namespace RetailDistribution.Web.Test
 {
 	[TestClass]
-	public class TestDistrictController
+	public class TestDistrictController : TestBase
 	{
 		[TestMethod]
 		public void Get_ShouldReturnAllDistricts()
@@ -25,31 +26,91 @@ namespace RetailDistribution.Web.Test
 			}
 		}
 
-		private IRetailDistributionUnitOfWork GetUnitOfWork()
+		[TestMethod]
+		public void GetVendors_ShouldReturnCorrespondingVendors()
 		{
-			TestRetailDistributionContext contextMock = new TestRetailDistributionContext();
-			var vendor1 = contextMock.Vendors.Add(new Vendor { VendorName = "Vendor1" });
-			var vendor2 = contextMock.Vendors.Add(new Vendor { VendorName = "Vendor2" });
-			var vendor3 = contextMock.Vendors.Add(new Vendor { VendorName = "Vendor3" });
+			var unitOfWork = GetUnitOfWork();
+			var controller = new DistrictController(unitOfWork);
 
-			var district1 = contextMock.Districts.Add(new District { DistrictName = "District1", PrimaryVendor = vendor2 });
-			var district2 = contextMock.Districts.Add(new District { DistrictName = "District2", PrimaryVendor = vendor2 });
-			var district3 = contextMock.Districts.Add(new District { DistrictName = "District3", PrimaryVendor = vendor1 });
+			var result = controller.GetVendors(3);
+			Assert.IsNotNull(result);
+			var resultList = result.ToList();
+			Assert.AreEqual(2, resultList.Count);
+			//Check that one of the vendors is marked as primary
+			Assert.IsTrue(resultList[1].IsPrimary);
+		}
 
-			contextMock.Shops.Add(new Shop { ShopName = "Shop1", District = district1 });
-			contextMock.Shops.Add(new Shop { ShopName = "Shop2", District = district2 });
-			contextMock.Shops.Add(new Shop { ShopName = "Shop3", District = district1 });
+		[TestMethod]
+		public void GetVendors_ShouldReturnUniquePrimaryVendor()
+		{
+			var unitOfWork = GetUnitOfWork();
+			var controller = new DistrictController(unitOfWork);
 
-			contextMock.DistrictVendors.Add(new DistrictVendor { Vendor = vendor3, District = district3 });
-			contextMock.DistrictVendors.Add(new DistrictVendor { Vendor = vendor2, District = district1 });
-			contextMock.DistrictVendors.Add(new DistrictVendor { Vendor = vendor2, District = district2 });
-			contextMock.DistrictVendors.Add(new DistrictVendor { Vendor = vendor1, District = district3 });
+			var result = controller.GetVendors(3);
+			Assert.IsNotNull(result);
+			int primaryVendors = 0;
+			foreach (var vendor in result)
+			{
+				if (vendor.IsPrimary) { primaryVendors++; }
+			}
 
-			var districtRepository = new DistrictRepository(contextMock);
-			var vendorRepository = new VendorRepository(contextMock);
-			var shopRepository = new ShopRepository(contextMock);
+			Assert.AreEqual(1, primaryVendors);
+		}
 
-			return new RetailDistributionUnitOfWork(contextMock, districtRepository, vendorRepository, shopRepository);
+		[TestMethod]
+		public void GetRemainingVendors_ReturnsUnusedVendors()
+		{
+			var unitOfWork = GetUnitOfWork();
+			var controller = new DistrictController(unitOfWork);
+
+			var result = controller.GetRemainingVendors(3);
+			Assert.IsNotNull(result);
+			var resultList = result.ToList();
+			Assert.AreEqual(1, resultList.Count);
+			Assert.AreEqual(2, resultList.First().VendorId);
+		}
+
+		[TestMethod]
+		public void Put_GetsNullParameter_ReturnsNull()
+		{
+			var unitOfWork = GetUnitOfWork();
+			var controller = new DistrictController(unitOfWork);
+
+			var result = controller.Put(null);
+			Assert.IsInstanceOfType(result, typeof(BadRequestResult));
+		}
+
+		[TestMethod]
+		public void Put_ReturnsDistrictWithUpdatedPrimaryVendor()
+		{
+			var unitOfWork = GetUnitOfWork();
+			var controller = new DistrictController(unitOfWork);
+
+			var result = controller.Put(new District { DistrictId = 3, PrimaryVendor = new Vendor { VendorId = 1 } })
+							as OkNegotiatedContentResult<District>;
+			Assert.IsNotNull(result);
+			Assert.AreEqual(1, result.Content.PrimaryVendor.VendorId);
+		}
+
+		[TestMethod]
+		public void RemoveVendor_ReturnsTrueIfSuccessful()
+		{
+			var unitOfWork = GetUnitOfWork();
+			var controller = new DistrictController(unitOfWork);
+
+			var result = controller.RemoveVendor(3, 3) as OkNegotiatedContentResult<bool>;
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.Content);
+		}
+
+		[TestMethod]
+		public void RemoveVendor_GetsPrimaryVendor_ReturnsBadRequest()
+		{
+			var unitOfWork = GetUnitOfWork();
+			var controller = new DistrictController(unitOfWork);
+
+			var result = controller.RemoveVendor(3, 1) as BadRequestErrorMessageResult;
+			Assert.IsNotNull(result);
 		}
 	}
 }
