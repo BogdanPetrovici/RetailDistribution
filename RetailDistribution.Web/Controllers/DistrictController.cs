@@ -2,6 +2,7 @@
 using RetailDistribution.Data.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -19,7 +20,7 @@ namespace RetailDistribution.Web.Controllers
 			this.unitOfWork = unitOfWork;
 		}
 
-		public IEnumerable<District> Get()
+		public IQueryable<District> Get()
 		{
 			var districts = unitOfWork.DistrictRepository.GetDistricts();
 			return districts;

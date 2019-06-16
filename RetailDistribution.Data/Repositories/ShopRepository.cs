@@ -6,9 +6,9 @@ namespace RetailDistribution.Data.Repositories
 {
 	public class ShopRepository : IShopRepository
 	{
-		private RetailDistributionContext context;
+		private IRetailDistributionContext context;
 
-		public ShopRepository(RetailDistributionContext context)
+		public ShopRepository(IRetailDistributionContext context)
 		{
 			this.context = context;
 		}

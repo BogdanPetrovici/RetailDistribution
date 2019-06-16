@@ -5,7 +5,7 @@ using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace RetailDistribution.Data
 {
-	public class RetailDistributionContext : DbContext
+	public class RetailDistributionContext : DbContext, IRetailDistributionContext
 	{
 		public RetailDistributionContext() : base("name=RetailDistributionConnectionString")
 		{
