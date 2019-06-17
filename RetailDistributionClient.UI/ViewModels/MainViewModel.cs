@@ -35,12 +35,15 @@ namespace RetailDistribution.Client.UI.ViewModels
 		{
 			try
 			{
-				var districtId = SelectedDistrict?.DistrictId;
-				var parametrizedPath = $"{path}/getvendors/{districtId}";
-				HttpResponseMessage response = await client.GetAsync(parametrizedPath).ConfigureAwait(false);
-				if (response.IsSuccessStatusCode)
+				if (SelectedDistrict != null)
 				{
-					Vendors = await response.Content.ReadAsAsync<IList<Vendor>>();
+					var districtId = SelectedDistrict.DistrictId;
+					var parametrizedPath = $"{path}/getvendors/{districtId}";
+					HttpResponseMessage response = await client.GetAsync(parametrizedPath).ConfigureAwait(false);
+					if (response.IsSuccessStatusCode)
+					{
+						Vendors = await response.Content.ReadAsAsync<IList<Vendor>>();
+					}
 				}
 
 				return Vendors;
@@ -203,12 +206,15 @@ namespace RetailDistribution.Client.UI.ViewModels
 		{
 			try
 			{
-				var districtId = SelectedDistrict?.DistrictId;
-				var parametrizedPath = $"{path}/{districtId}";
-				HttpResponseMessage response = await client.GetAsync(parametrizedPath).ConfigureAwait(false);
-				if (response.IsSuccessStatusCode)
+				if (SelectedDistrict != null)
 				{
-					Shops = await response.Content.ReadAsAsync<IEnumerable<Shop>>();
+					var districtId = SelectedDistrict.DistrictId;
+					var parametrizedPath = $"{path}/{districtId}";
+					HttpResponseMessage response = await client.GetAsync(parametrizedPath).ConfigureAwait(false);
+					if (response.IsSuccessStatusCode)
+					{
+						Shops = await response.Content.ReadAsAsync<IEnumerable<Shop>>();
+					}
 				}
 
 				return Shops;
