@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Retail Distribution" 
         Loaded="Window_Loaded"
-        Height="450" Width="800">
+        Height="400" Width="400">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition x:Name="row1" Height="auto"/>
@@ -22,7 +22,7 @@
             <ColumnDefinition x:Name="col3" Width="auto"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0">Districts</Label>
-        <ListBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Width="100" 
+        <ListBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Width="100"
                  ItemsSource="{Binding Districts}" SelectedItem="{Binding SelectedDistrict, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  SelectionChanged="ListBox_SelectionChanged">
             <ListBox.ItemTemplate>
