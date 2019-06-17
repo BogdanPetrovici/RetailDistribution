@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Initializers\RetailDistributionDbInitializer.cs" />
+    <Compile Include="IRetailDistributionContext.cs" />
     <Compile Include="Model\District.cs" />
     <Compile Include="Model\DistrictVendor.cs" />
     <Compile Include="Model\Shop.cs" />

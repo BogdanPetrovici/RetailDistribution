@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailDistribution.Console"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailDistribution.Client.UI", "RetailDistributionClient.UI\RetailDistribution.Client.UI.csproj", "{889C17E4-79EB-4510-BCBF-9D5E010C1444}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailDistribution.Client.UI.Test", "RetailDistribution.Client.UI.Test\RetailDistribution.Client.UI.Test.csproj", "{8DA5D869-16AB-459C-B3C1-B63F29F01736}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetailDistribution.Web.Test", "RetailDistribution.Web.Test\RetailDistribution.Web.Test.csproj", "{8831A507-108D-4104-AAC3-EAF53F415C55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{889C17E4-79EB-4510-BCBF-9D5E010C1444}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{889C17E4-79EB-4510-BCBF-9D5E010C1444}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{889C17E4-79EB-4510-BCBF-9D5E010C1444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DA5D869-16AB-459C-B3C1-B63F29F01736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DA5D869-16AB-459C-B3C1-B63F29F01736}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DA5D869-16AB-459C-B3C1-B63F29F01736}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DA5D869-16AB-459C-B3C1-B63F29F01736}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8831A507-108D-4104-AAC3-EAF53F415C55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8831A507-108D-4104-AAC3-EAF53F415C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8831A507-108D-4104-AAC3-EAF53F415C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8831A507-108D-4104-AAC3-EAF53F415C55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

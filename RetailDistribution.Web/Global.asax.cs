@@ -20,7 +20,7 @@ namespace RetailDistribution.Web
 			container.Register<IDistrictRepository, DistrictRepository>(Lifestyle.Scoped);
 			container.Register<IVendorRepository, VendorRepository>(Lifestyle.Scoped);
 			container.Register<IShopRepository, ShopRepository>(Lifestyle.Scoped);
-			container.Register<RetailDistributionContext>(Lifestyle.Scoped);
+			container.Register<IRetailDistributionContext, RetailDistributionContext>(Lifestyle.Scoped);
 			container.Register<IRetailDistributionUnitOfWork, RetailDistributionUnitOfWork>(Lifestyle.Scoped);
 
 			// This is an extension method from the integration package.

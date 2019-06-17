@@ -2,9 +2,9 @@
 using RetailDistribution.Data.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
+using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace RetailDistribution.Web.Controllers
 {
@@ -19,7 +19,7 @@ namespace RetailDistribution.Web.Controllers
 			this.unitOfWork = unitOfWork;
 		}
 
-		public IEnumerable<District> Get()
+		public IQueryable<District> Get()
 		{
 			var districts = unitOfWork.DistrictRepository.GetDistricts();
 			return districts;
@@ -30,7 +30,7 @@ namespace RetailDistribution.Web.Controllers
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public IEnumerable<Vendor> GetVendors(int id)
+		public IQueryable<Vendor> GetVendors(int id)
 		{
 			var vendors = unitOfWork.VendorRepository.GetVendors(id);
 			return vendors;
@@ -53,7 +53,8 @@ namespace RetailDistribution.Web.Controllers
 		/// </summary>
 		/// <param name="district"></param>
 		/// <returns></returns>
-		public District Put([FromBody]District district)
+		[ResponseType(typeof(District))]
+		public IHttpActionResult Put([FromBody]District district)
 		{
 			if (district != null && district.PrimaryVendor != null)
 			{
@@ -65,10 +66,10 @@ namespace RetailDistribution.Web.Controllers
 				}
 
 				unitOfWork.Save();
-				return districtEntity;
+				return Ok(districtEntity);
 			}
 
-			return null;
+			return BadRequest();
 		}
 
 		/// <summary>
@@ -78,24 +79,25 @@ namespace RetailDistribution.Web.Controllers
 		/// <param name="vendorId">The id of the vendor that must be removed</param>
 		/// <returns>True if successful, false, otherwise</returns>
 		[HttpDelete]
+		[ResponseType(typeof(bool))]
 		[Route("api/district/removeVendor/{districtId}/{vendorId}")]
-		public HttpResponseMessage RemoveVendor(int districtId, int vendorId)
+		public IHttpActionResult RemoveVendor(int districtId, int vendorId)
 		{
 			try
 			{
 				unitOfWork.DistrictRepository.RemoveVendor(districtId, vendorId);
 				unitOfWork.Save();
-				return Request.CreateResponse(HttpStatusCode.OK, true);
+				return Ok(true);
 			}
 			catch (InvalidOperationException exCannotRemove)
 			{
 				log.Error(exCannotRemove.ToString());
-				return Request.CreateResponse(HttpStatusCode.BadRequest, exCannotRemove.Message);
+				return BadRequest(exCannotRemove.Message);
 			}
 			catch (Exception ex)
 			{
 				log.Error(ex.ToString());
-				return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+				return InternalServerError(ex);
 			}
 		}
 

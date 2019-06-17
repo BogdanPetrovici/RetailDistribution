@@ -11,9 +11,9 @@ namespace RetailDistribution.Data.Repositories
 		private IDistrictRepository districtRepository;
 		private IShopRepository shopRepository;
 		private IVendorRepository vendorRepository;
-		private readonly RetailDistributionContext context;
+		private readonly IRetailDistributionContext context;
 
-		public RetailDistributionUnitOfWork(RetailDistributionContext context, IDistrictRepository districtRepository, IVendorRepository vendorRepository, IShopRepository shopRepository)
+		public RetailDistributionUnitOfWork(IRetailDistributionContext context, IDistrictRepository districtRepository, IVendorRepository vendorRepository, IShopRepository shopRepository)
 		{
 			this.districtRepository = districtRepository;
 			this.vendorRepository = vendorRepository;
